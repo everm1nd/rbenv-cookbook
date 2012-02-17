@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-define :rbenv_installation, 
+define :rbenv_installation,
        :type                => [:system],
        :git_repository      => 'git://github.com/sstephenson/rbenv.git',
        :git_revision        => 'master',
@@ -67,6 +67,14 @@ define :rbenv_installation,
 
   bash "source_rbenv_sh" do
     code "source /etc/profile.d/rbenv.sh"
+  end
+
+  bash "add rbenv support in /etc/zsh/zshenv" do
+    code <<-EOH
+    echo '# rbenv support' >> /etc/zsh/zshenv
+    cat /etc/profile.d/rbenv.sh >> /etc/zsh/zshenv
+    EOH
+    not_if "cat /etc/zsh/zshenv | grep '# rbenv support'"
   end
 
   bash "set_permissions_on_rbenv_root" do
