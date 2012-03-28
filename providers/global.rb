@@ -21,8 +21,13 @@
 include Chef::Mixin::Rbenv
 
 action :activate do
-  execute "export ruby version in /opt/rbenv/version" do
-    command "echo '#{new_resource.name}' > /opt/rbenv/version"
+  template "/opt/rbenv/version" do
+    cookbook "rbenv"
+    source "version.erb"
+    owner "rbenv"
+    group "rbenv"
+    mode "775"
+    variables :ruby_version => new_resource.name
   end
   # if !@ruby.force && ruby_version_installed?(@ruby.name)
   #   Chef::Log.debug "rbenv_ruby[#{@ruby.name}] is already installed so skipping"
